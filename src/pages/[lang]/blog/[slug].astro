@@ -1,0 +1,22 @@
+---
+import BlogPost from '../../../components/BlogPost.astro';
+import { allPosts, postSlug } from '../../../lib/blog.ts';
+import { LANGS, type Lang } from '../../../i18n/index.ts';
+
+export async function getStaticPaths() {
+  const all = await allPosts();
+  const paths = [];
+  for (const lang of LANGS) {
+    if (lang === 'en') continue; // en 走 /blog/<slug>/
+    for (const post of all.filter((p) => p.data.lang === lang)) {
+      paths.push({ params: { lang, slug: postSlug(post) }, props: { post } });
+    }
+  }
+  return paths;
+}
+
+const { post } = Astro.props;
+const lang = Astro.params.lang as Lang;
+---
+
+<BlogPost lang={lang} post={post} />

@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { homeUrl } from '../lib/url.ts';
+---
+
+<BaseLayout lang="en" title="404: Not Found" description="The page you requested could not be found.">
+  <div class="container">
+    <section class="hero">
+      <h1>404</h1>
+      <p>That page does not exist.</p>
+      <p><a class="btn" href={homeUrl('en')}>Back to home</a></p>
+    </section>
+  </div>
+</BaseLayout>

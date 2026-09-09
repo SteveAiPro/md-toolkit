@@ -1,0 +1,19 @@
+---
+import HomeContent from '../../components/HomeContent.astro';
+import { LANGS, type Lang } from '../../i18n/index.ts';
+
+export function getStaticPaths() {
+  // en 由 src/pages/index.astro 负责，这里只生成其余语言
+  return LANGS.filter((lang): lang is Lang => lang !== 'en').map((lang) => ({
+    params: { lang },
+    props: { lang },
+  }));
+}
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<HomeContent lang={lang} />

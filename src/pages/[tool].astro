@@ -1,0 +1,15 @@
+---
+import ToolPage from '../components/ToolPage.astro';
+import { TOOLS, type ToolDef } from '../tools.ts';
+
+export function getStaticPaths() {
+  return TOOLS.map((tool) => ({ params: { tool: tool.slug }, props: { tool } }));
+}
+
+interface Props {
+  tool: ToolDef;
+}
+const { tool } = Astro.props;
+---
+
+<ToolPage lang="en" tool={tool} />

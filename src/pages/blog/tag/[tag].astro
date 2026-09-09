@@ -1,0 +1,13 @@
+---
+import TagIndex from '../../../components/TagIndex.astro';
+import { tagsByLang } from '../../../lib/blog.ts';
+
+export async function getStaticPaths() {
+  const tags = await tagsByLang('en');
+  return tags.map(({ tag }) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+---
+
+<TagIndex lang="en" tag={tag!} />

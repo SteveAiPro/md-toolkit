@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n/ui.ts';
+import { postsByLang, postSlug, tagsByLang, readingMinutes } from '../lib/blog.ts';
+import { localePath } from '../lib/url.ts';
+import type { Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const posts = await postsByLang(lang);
+const tags = await tagsByLang(lang);
+const SITE = 'Markdown Toolkit';
+
+const fmt = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${t(lang, 'blog.title')} — ${SITE}`}
+  description={t(lang, 'blog.subtitle')}
+  path="/blog/"
+  noindex={posts.length === 0}
+>
+  <section class="container blog">
+    <header class="blog__head">
+      <h1>{t(lang, 'blog.title')}</h1>
+      <p class="blog__sub">{t(lang, 'blog.subtitle')}</p>
+    </header>
+
+    {
+      tags.length > 0 && (
+        <nav class="blog__tags" aria-label={t(lang, 'blog.allTags')}>
+          {tags.map((entry) => (
+            <a class="tag" href={localePath(`/blog/tag/${entry.tag}/`, lang)}>
+              {entry.tag}
+              <span class="tag__count">{entry.count}</span>
+            </a>
+          ))}
+        </nav>
+      )
+    }
+
+    {
+      posts.length === 0 ? (
+        <p class="blog__empty">{t(lang, 'blog.empty')}</p>
+      ) : (
+        <ul class="blog__list">
+          {posts.map((post) => (
+            <li class="post-card">
+              <h2 class="post-card__title">
+                <a href={localePath(`/blog/${postSlug(post)}/`, lang)}>{post.data.title}</a>
+              </h2>
+              <p class="post-card__desc">{post.data.description}</p>
+              <div class="post-card__meta">
+                <time datetime={post.data.pubDate.toISOString()}>
+                  {fmt.format(post.data.pubDate)}
+                </time>
+                <span aria-hidden="true">·</span>
+                <span>{readingMinutes(post.body ?? '', lang)} {t(lang, 'blog.minRead')}</span>
+                {post.data.tags.length > 0 && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span class="post-card__tags">{post.data.tags.join(', ')}</span>
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+</BaseLayout>

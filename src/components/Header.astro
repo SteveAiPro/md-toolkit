@@ -1,0 +1,91 @@
+---
+import { LANGS, LANG_LABEL, type Lang } from '../i18n/index.ts';
+import { homeUrl, localePath, toolUrl } from '../lib/url.ts';
+import { t } from '../i18n/ui.ts';
+
+interface Props {
+  lang: Lang;
+  currentSlug?: string;
+  /**
+   * 当前页在 en 下的路径（如 /blog/foo/）。
+   * 有了它，语言切换器才会跳到同一篇 blog 的对应语言版，
+   * 而不是一律跳回首页。
+   */
+  basePath?: string;
+}
+const { lang, currentSlug, basePath } = Astro.props;
+
+const target = (next: Lang) => {
+  if (basePath) return localePath(basePath, next);
+  return currentSlug ? toolUrl(currentSlug, next) : homeUrl(next);
+};
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href={homeUrl(lang)}>
+      <span class="brand__mark" aria-hidden="true">MD</span>
+      <span>MD Toolkit</span>
+    </a>
+
+    <nav class="site-nav">
+      <a href={homeUrl(lang)}>{t(lang, 'nav.home')}</a>
+      <a href={localePath('/blog/', lang)}>{t(lang, 'nav.blog')}</a>
+
+      <label class="lang-switch" title="Language">
+        <span class="sr-only">Language</span>
+        <select id="lang-select" aria-label="Language">
+          {LANGS.map((code) => (
+            <option value={target(code)} selected={code === lang}>
+              {LANG_LABEL[code]}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <button class="btn btn--ghost" id="theme-toggle" type="button" aria-label="Toggle theme">
+        <span id="theme-toggle-icon">◐</span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .lang-switch select {
+    border: 0.5px solid var(--border-strong);
+    background: var(--bg);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 5px 8px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+</style>
+
+<script>
+  const select = document.getElementById('lang-select') as HTMLSelectElement | null;
+  select?.addEventListener('change', () => {
+    if (select.value) window.location.href = select.value;
+  });
+
+  const toggle = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+  const stored = localStorage.getItem('theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  if (stored === 'dark' || (!stored && prefersDark)) root.setAttribute('data-theme', 'dark');
+
+  toggle?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>

@@ -1,0 +1,83 @@
+---
+import 'katex/dist/katex.min.css';
+import 'highlight.js/styles/github.css';
+import '../styles/global.css';
+import '../styles/preview.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { HREFLANG, LANGS, type Lang } from '../i18n/index.ts';
+import { homeUrl, localePath, toolUrl } from '../lib/url.ts';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  /** 工具页 slug，与 path 二选一 */
+  slug?: string;
+  /** 英语版站内路径（如 /blog/foo/）。blog、tag 等非工具页用它 */
+  path?: string;
+  /**
+   * 实际存在对应版本的语言。默认全 7 种。
+   * blog 文章不一定每种语言都有译本，此时必须传，否则 hreflang 会指向 404。
+   */
+  availableLangs?: readonly Lang[];
+  /** JSON-LD 结构化数据，工具页传 WebApplication + FAQPage */
+  jsonLd?: unknown;
+  /** 单篇文章的 tag 页内容太薄，索引了会被判低价值内容 —— 只跟随不索引 */
+  noindex?: boolean;
+}
+
+const { lang, title, description, slug, path, availableLangs, jsonLd, noindex } = Astro.props;
+
+// en 版路径统一先算出来，再按语言加前缀
+const basePath = path ?? (slug ? toolUrl(slug, 'en') : homeUrl('en'));
+
+const canonical = new URL(localePath(basePath, lang), Astro.site).href;
+const alternates = (availableLangs ?? LANGS).map((code) => ({
+  hreflang: HREFLANG[code],
+  href: new URL(localePath(basePath, code), Astro.site).href,
+}));
+const ogImage = new URL('/og/home.png', Astro.site).href;
+---
+
+<!doctype html>
+<html lang={HREFLANG[lang]}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={new URL(basePath, Astro.site).href} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script is:inline>
+      const stored = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (stored === 'dark' || (!stored && prefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    </script>
+
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <Header lang={lang} currentSlug={slug} basePath={basePath} />
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

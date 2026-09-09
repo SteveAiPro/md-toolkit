@@ -1,0 +1,22 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { TOOLS, type ToolDef } from '../../tools.ts';
+import { LANGS, type Lang } from '../../i18n/index.ts';
+
+export function getStaticPaths() {
+  return TOOLS.flatMap((tool) =>
+    LANGS.filter((lang) => lang !== 'en').map((lang) => ({
+      params: { lang, tool: tool.slug },
+      props: { lang, tool },
+    })),
+  );
+}
+
+interface Props {
+  lang: Lang;
+  tool: ToolDef;
+}
+const { lang, tool } = Astro.props;
+---
+
+<ToolPage lang={lang} tool={tool} />

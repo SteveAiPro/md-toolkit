@@ -1,0 +1,156 @@
+---
+import type { Lang } from '../i18n/index.ts';
+import { t } from '../i18n/ui.ts';
+import { SAMPLE_CSV, SAMPLE_HTML, SAMPLE_JSON, SAMPLE_LATEX, SAMPLE_MARKDOWN } from '../lib/sample.ts';
+import type { ToolDef } from '../tools.ts';
+
+interface Props {
+  lang: Lang;
+  tool: ToolDef;
+}
+const { lang, tool } = Astro.props;
+
+// 输入侧由 inputKind 决定，输出控件由 outputKind 决定 —— 两者不是一回事
+const inputIsMarkdown = tool.direction === 'md-out';
+const rendersHtml = tool.outputKind === 'html';
+const isBinary = tool.binary === true;
+
+const SAMPLES: Record<ToolDef['inputKind'], string> = {
+  md: SAMPLE_MARKDOWN,
+  html: SAMPLE_HTML,
+  csv: SAMPLE_CSV,
+  json: SAMPLE_JSON,
+  latex: SAMPLE_LATEX,
+  file: '',
+};
+
+const TITLES: Record<ToolDef['inputKind'], string> = {
+  md: 'Markdown',
+  html: 'HTML',
+  csv: 'CSV / TSV',
+  json: 'JSON',
+  latex: 'LaTeX',
+  file: t(lang, 'tool.file'),
+};
+
+const PLACEHOLDERS: Record<ToolDef['inputKind'], string> = {
+  md: '# Start typing Markdown…',
+  html: '<p>Or paste HTML here…</p>',
+  csv: 'name,status,owner',
+  json: '[{ "name": "Word export", "status": "Shipped" }]',
+  latex: '\\section{Introduction}',
+  file: '',
+};
+
+const sample = SAMPLES[tool.inputKind];
+
+const config = {
+  converter: tool.converter,
+  direction: tool.direction,
+  outputKind: tool.outputKind,
+  outputExt: tool.outputExt,
+  accept: tool.accept,
+  inputKind: tool.inputKind,
+  binary: isBinary,
+  sample,
+  labels: {
+    copied: t(lang, 'tool.copied'),
+    failed: t(lang, 'tool.failed'),
+    dropHint: t(lang, 'tool.drop'),
+    empty: t(lang, 'tool.empty'),
+  },
+};
+---
+
+<div class="editor">
+  <section class="pane">
+    <div class="pane__bar">
+      <span class="pane__title">{TITLES[tool.inputKind]}</span>
+      <div class="pane__actions">
+        {
+          !isBinary && (
+            <>
+              <button class="btn" id="tool-sample" type="button">
+                {t(lang, 'tool.sample')}
+              </button>
+              <button class="btn" id="tool-clear" type="button">
+                {t(lang, 'tool.clear')}
+              </button>
+            </>
+          )
+        }
+      </div>
+    </div>
+    <div class="pane__body">
+      <div class="dropzone" id="tool-dropzone">{t(lang, 'tool.drop')}</div>
+      {
+        isBinary ? (
+          <p class="file-name" id="tool-filename" data-empty={t(lang, 'tool.noFile')}>
+            {t(lang, 'tool.noFile')}
+          </p>
+        ) : (
+          <textarea
+            id="tool-input"
+            class="field"
+            spellcheck="false"
+            placeholder={PLACEHOLDERS[tool.inputKind]}
+          ></textarea>
+        )
+      }
+      <input type="file" id="tool-file" accept={tool.accept} hidden />
+    </div>
+  </section>
+
+  <section class="pane">
+    <div class="pane__bar">
+      <span class="pane__title">{rendersHtml ? t(lang, 'tool.preview') : t(lang, 'tool.output')}</span>
+      <div class="pane__actions">
+        <button class="btn" id="tool-copy" type="button">{t(lang, 'tool.copy')}</button>
+        <button class="btn btn--primary" id="tool-download" type="button" disabled={isBinary}>
+          {t(lang, 'tool.download')} .{tool.outputExt}
+        </button>
+      </div>
+    </div>
+    <div class="pane__body">
+      {
+        rendersHtml ? (
+          <div id="tool-preview" class="preview-body"></div>
+        ) : (
+          <textarea id="tool-output" class="field" spellcheck="false" readonly></textarea>
+        )
+      }
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="tool-toast" role="status" aria-live="polite"></div>
+
+<script type="application/json" id="tool-config" set:html={JSON.stringify(config)} />
+
+<script>
+  import { initTool } from '../scripts/tool.ts';
+
+  const node = document.getElementById('tool-config');
+  if (node) {
+    void initTool(JSON.parse(node.textContent ?? '{}'));
+  }
+</script>
+
+<script>
+  // 点击 dropzone 等同于点隐藏的 file input
+  const zone = document.getElementById('tool-dropzone');
+  const file = document.getElementById('tool-file') as HTMLInputElement | null;
+  zone?.addEventListener('click', () => file?.click());
+</script>
+
+<style>
+  .file-name {
+    margin: 0.75rem 1rem;
+    font-size: 13px;
+    color: var(--color-text-tertiary);
+    word-break: break-all;
+  }
+  .file-name[data-empty='true'] {
+    font-style: italic;
+  }
+</style>

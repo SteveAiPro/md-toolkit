@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t } from '../i18n/ui.ts';
+import { postsByLang, postSlug, readingMinutes } from '../lib/blog.ts';
+import { localePath } from '../lib/url.ts';
+import type { Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+  tag: string;
+}
+
+const { lang, tag } = Astro.props;
+const all = await postsByLang(lang);
+const posts = all.filter((p) => p.data.tags.includes(tag));
+const SITE = 'Markdown Toolkit';
+
+const fmt = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${tag} — ${t(lang, 'blog.title')} — ${SITE}`}
+  description={`${posts.length} ${t(lang, 'blog.postsCount')} tagged "${tag}".`}
+  path={`/blog/tag/${tag}/`}
+  noindex={posts.length < 2}
+>
+  <section class="container blog">
+    <header class="blog__head">
+      <nav class="post__back">
+        <a href={localePath('/blog/', lang)}>← {t(lang, 'blog.back')}</a>
+      </nav>
+      <h1>#{tag}</h1>
+      <p class="blog__sub">{posts.length} {t(lang, 'blog.postsCount')}</p>
+    </header>
+
+    <ul class="blog__list">
+      {
+        posts.map((post) => (
+          <li class="post-card">
+            <h2 class="post-card__title">
+              <a href={localePath(`/blog/${postSlug(post)}/`, lang)}>{post.data.title}</a>
+            </h2>
+            <p class="post-card__desc">{post.data.description}</p>
+            <div class="post-card__meta">
+              <time datetime={post.data.pubDate.toISOString()}>{fmt.format(post.data.pubDate)}</time>
+              <span aria-hidden="true">·</span>
+              <span>
+                {readingMinutes(post.body ?? '', lang)} {t(lang, 'blog.minRead')}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</BaseLayout>

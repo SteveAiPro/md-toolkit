@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t, pick } from '../i18n/ui.ts';
+import { postSlug, translationsOf, readingMinutes, type Post } from '../lib/blog.ts';
+import { localePath, toolUrl } from '../lib/url.ts';
+import { getTool } from '../tools.ts';
+import { LANGS, type Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+  post: Post;
+}
+
+const { lang, post } = Astro.props;
+const { Content } = await render(post);
+
+const slug = postSlug(post);
+const translations = await translationsOf(post);
+const availableLangs = LANGS.filter((code) => translations[code]);
+const SITE = 'Markdown Toolkit';
+
+// 相关工具内链：文章 -> 工具页，形成 SEO 闭环
+const related = post.data.tools
+  .map((toolSlug) => getTool(toolSlug))
+  .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
+
+const fmt = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' });
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  inLanguage: lang,
+  keywords: post.data.tags.join(', '),
+  publisher: { '@type': 'Organization', name: SITE },
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${post.data.title} — ${SITE}`}
+  description={post.data.description}
+  path={`/blog/${slug}/`}
+  availableLangs={availableLangs}
+  jsonLd={jsonLd}
+>
+  <article class="container post">
+    <nav class="post__back">
+      <a href={localePath('/blog/', lang)}>← {t(lang, 'blog.back')}</a>
+    </nav>
+
+    <header class="post__head">
+      <h1>{post.data.title}</h1>
+      <p class="post__desc">{post.data.description}</p>
+      <div class="post__meta">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {t(lang, 'blog.published')} {fmt.format(post.data.pubDate)}
+        </time>
+        <span aria-hidden="true">·</span>
+        <span>{readingMinutes(post.body ?? '', lang)} {t(lang, 'blog.minRead')}</span>
+      </div>
+    </header>
+
+    {/* preview-body 是预览区已有的 markdown 排版，正文直接复用 */}
+    <div class="post__body preview-body">
+      <Content />
+    </div>
+
+    {
+      post.data.tags.length > 0 && (
+        <footer class="post__tags">
+          <span class="post__tagsLabel">{t(lang, 'blog.tags')}</span>
+          {post.data.tags.map((tag) => (
+            <a class="tag" href={localePath(`/blog/tag/${tag}/`, lang)}>
+              {tag}
+            </a>
+          ))}
+        </footer>
+      )
+    }
+
+    {
+      related.length > 0 && (
+        <section class="post__related">
+          <h2>{t(lang, 'blog.relatedTools')}</h2>
+          <ul class="post__relatedList">
+            {related.map((tool) => (
+              <li>
+                <a href={toolUrl(tool.slug, lang)}>{pick(lang, tool.name)}</a>
+                <span>{pick(lang, tool.seoDesc)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>

@@ -1,0 +1,49 @@
+{
+  "name": "md-toolkit",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "fixtures": "node make-fixtures.mjs",
+    "check:i18n": "node check-i18n.mjs",
+    "test:e2e": "node make-fixtures.mjs && node test-e2e.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@vscode/markdown-it-katex": "^1.0.3",
+    "astro": "^5.18.2",
+    "docx": "^9.5.1",
+    "dompurify": "^3.2.7",
+    "file-saver": "^2.0.5",
+    "highlight.js": "^11.11.1",
+    "html-to-image": "^1.11.13",
+    "katex": "^0.16.22",
+    "lucide": "^0.545.0",
+    "mammoth": "^1.9.1",
+    "markdown-it": "^14.1.0",
+    "markdown-it-abbr": "^2.0.0",
+    "markdown-it-container": "^4.0.0",
+    "markdown-it-deflist": "^3.0.0",
+    "markdown-it-emoji": "^3.0.0",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-ins": "^4.0.0",
+    "markdown-it-mark": "^4.0.0",
+    "markdown-it-sub": "^2.0.0",
+    "markdown-it-sup": "^2.0.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "papaparse": "^5.5.3",
+    "pdfjs-dist": "^4.10.38",
+    "turndown": "^7.2.2",
+    "turndown-plugin-gfm": "^1.0.2"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/turndown": "^5.0.5",
+    "playwright-core": "^1.63.0",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,12 @@
+---
+import BlogIndex from '../../../components/BlogIndex.astro';
+import { LANGS, type Lang } from '../../../i18n/index.ts';
+
+export function getStaticPaths() {
+  return LANGS.filter((l) => l !== 'en').map((lang) => ({ params: { lang } }));
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BlogIndex lang={lang} />

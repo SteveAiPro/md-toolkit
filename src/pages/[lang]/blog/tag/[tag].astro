@@ -1,0 +1,21 @@
+---
+import TagIndex from '../../../../components/TagIndex.astro';
+import { tagsByLang } from '../../../../lib/blog.ts';
+import { LANGS, type Lang } from '../../../../i18n/index.ts';
+
+export async function getStaticPaths() {
+  const paths = [];
+  for (const lang of LANGS) {
+    if (lang === 'en') continue; // en 走 /blog/tag/<tag>/
+    for (const { tag } of await tagsByLang(lang)) {
+      paths.push({ params: { lang, tag } });
+    }
+  }
+  return paths;
+}
+
+const { tag } = Astro.params;
+const lang = Astro.params.lang as Lang;
+---
+
+<TagIndex lang={lang} tag={tag!} />

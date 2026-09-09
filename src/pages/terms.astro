@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  lang="en"
+  title="Terms of Service | MD Toolkit"
+  description="Terms for using the MD Toolkit online converters."
+>
+  <div class="container">
+    <div class="tool-head">
+      <h1>Terms of Service</h1>
+      <p>Use it freely. Do not abuse it.</p>
+    </div>
+
+    <section class="section">
+      <div class="faq">
+        <details open>
+          <summary>Service scope</summary>
+          <p>
+            The converters are provided as-is, free of charge, with no uptime guarantee. Output
+            formatting can vary between browsers and document viewers.
+          </p>
+        </details>
+        <details>
+          <summary>Your content</summary>
+          <p>
+            You keep full ownership of everything you convert. Since processing happens locally, we
+            never receive or store it.
+          </p>
+        </details>
+        <details>
+          <summary>Pro plans</summary>
+          <p>
+            If you introduce paid plans, describe billing, refunds and cancellation here before you
+            start charging.
+          </p>
+        </details>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .tool-head { padding: 36px 0 4px; max-width: 760px; }
+  .tool-head h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 10px; font-weight: 600; }
+  .tool-head p { margin: 0; color: var(--text-soft); }
+</style>

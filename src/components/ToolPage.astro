@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SplitEditor from './SplitEditor.astro';
+import { t, pick } from '../i18n/ui.ts';
+import type { Lang } from '../i18n/index.ts';
+import { toolUrl } from '../lib/url.ts';
+import type { ToolDef } from '../tools.ts';
+
+interface Props {
+  lang: Lang;
+  tool: ToolDef;
+}
+const { lang, tool } = Astro.props;
+
+const title = pick(lang, tool.seoTitle);
+const description = pick(lang, tool.seoDesc);
+const siteUrl = (Astro.site ?? 'https://example.com').href.replace(/\/$/, '');
+const canonical = `${siteUrl}${toolUrl(tool.slug, lang)}`;
+
+const faqs = [
+  { q: t(lang, 'faq.privacy.q'), a: t(lang, 'faq.privacy.a') },
+  { q: t(lang, 'faq.account.q'), a: t(lang, 'faq.account.a') },
+  { q: t(lang, 'faq.mobile.q'), a: t(lang, 'faq.mobile.a') },
+  { q: t(lang, 'faq.pdf.q'), a: t(lang, 'faq.pdf.a') },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebApplication',
+      name: pick(lang, tool.name),
+      url: canonical,
+      applicationCategory: 'UtilitiesApplication',
+      operatingSystem: 'Any',
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      description,
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+  ],
+};
+---
+
+<BaseLayout lang={lang} title={title} description={description} slug={tool.slug} jsonLd={jsonLd}>
+  <div class="container">
+    <div class="tool-head">
+      <h1>{pick(lang, tool.h1)}</h1>
+      <p>{pick(lang, tool.intro)}</p>
+    </div>
+
+    <SplitEditor lang={lang} tool={tool} />
+
+    <section class="section">
+      <h2>{t(lang, 'faq.title')}</h2>
+      <div class="faq">
+        {
+          faqs.map((f) => (
+            <details>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .tool-head { padding: 36px 0 4px; max-width: 760px; }
+  .tool-head h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 10px; font-weight: 600; letter-spacing: -0.02em; }
+  .tool-head p { margin: 0; color: var(--text-soft); font-size: 15.5px; }
+</style>
