@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '../i18n/index.ts';
 import { t } from '../i18n/ui.ts';
+import { localePath } from '../lib/url.ts';
 
 interface Props {
   lang: Lang;
@@ -13,8 +14,8 @@ const year = new Date().getFullYear();
   <div class="container site-footer__inner">
     <span>© {year} MD Toolkit. {t(lang, 'footer.rights')}</span>
     <nav>
-      <a href="/privacy/">{t(lang, 'footer.privacy')}</a>
-      <a href="/terms/">{t(lang, 'footer.terms')}</a>
+      <a href={localePath('/privacy/', lang)}>{t(lang, 'footer.privacy')}</a>
+      <a href={localePath('/terms/', lang)}>{t(lang, 'footer.terms')}</a>
     </nav>
   </div>
 </footer>

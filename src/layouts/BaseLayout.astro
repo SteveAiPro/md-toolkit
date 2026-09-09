@@ -26,9 +26,11 @@ interface Props {
   jsonLd?: unknown;
   /** 单篇文章的 tag 页内容太薄，索引了会被判低价值内容 —— 只跟随不索引 */
   noindex?: boolean;
+  /** 该页面所在语言有文章时贴 RSS 发现链接（0 篇的语言不生成 feed，贴了就是死链） */
+  feed?: boolean;
 }
 
-const { lang, title, description, slug, path, availableLangs, jsonLd, noindex } = Astro.props;
+const { lang, title, description, slug, path, availableLangs, jsonLd, noindex, feed } = Astro.props;
 
 // en 版路径统一先算出来，再按语言加前缀
 const basePath = path ?? (slug ? toolUrl(slug, 'en') : homeUrl('en'));
@@ -38,7 +40,10 @@ const alternates = (availableLangs ?? LANGS).map((code) => ({
   hreflang: HREFLANG[code],
   href: new URL(localePath(basePath, code), Astro.site).href,
 }));
-const ogImage = new URL('/og/home.png', Astro.site).href;
+// 工具页用自己的 OG 卡（make-og.mjs 生成），其余页面回落到 home.png。
+// 顺序很重要：必须先确认 public/og/ 里有这个图，否则 og:image 会指向 404，
+// 分享出去就是空白卡片 —— 之前所有页面都写死指向一个不存在的文件。
+const ogImage = new URL(slug ? `/og/${slug}.png` : '/og/home.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -53,6 +58,14 @@ const ogImage = new URL('/og/home.png', Astro.site).href;
     <link rel="canonical" href={canonical} />
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     <link rel="alternate" hreflang="x-default" href={new URL(basePath, Astro.site).href} />
+    {feed && (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={title}
+        href={new URL(localePath('/rss.xml', lang), Astro.site).href}
+      />
+    )}
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />

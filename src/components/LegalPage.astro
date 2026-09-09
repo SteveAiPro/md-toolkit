@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Lang } from '../i18n/index.ts';
+import type { LegalContent } from '../lib/legal.ts';
+
+interface Props {
+  lang: Lang;
+  /** 站内路径段，决定 canonical 和 hreflang */
+  slug: 'privacy' | 'terms';
+  content: LegalContent;
+}
+
+const { lang, slug, content } = Astro.props;
+---
+
+<BaseLayout
+  lang={lang}
+  title={content.title}
+  description={content.description}
+  path={`/${slug}/`}
+>
+  <div class="container">
+    <div class="tool-head">
+      <h1>{content.h1}</h1>
+      <p>{content.lead}</p>
+    </div>
+
+    <section class="section">
+      <p class="legal-updated">{content.updated}</p>
+      <div class="faq">
+        {
+          content.items.map((item, i) => (
+            <details open={i === 0}>
+              <summary>{item.q}</summary>
+              <p set:html={item.a} />
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .tool-head { padding: 36px 0 4px; max-width: 760px; }
+  .tool-head h1 { font-size: clamp(24px, 3.2vw, 34px); margin: 0 0 10px; font-weight: 600; }
+  .tool-head p { margin: 0; color: var(--text-soft); }
+  .legal-updated { color: var(--text-soft); font-size: 13px; margin: 0 0 18px; }
+</style>

@@ -157,6 +157,85 @@ for (const [label, listPath] of [
 
 await browser.close();
 
+// ---- 收尾项：法务页 / RSS / OG 图 ----
+// 这三项是「页面能打开」之外最容易默默坏掉的：og:image 指到不存在的文件、
+// 空语言生成空 feed、法务页只有英文 —— 全都 200，肉眼在浏览器里看不出来。
+const legal = [];
+for (const [lang, prefix] of [
+  ['en', ''],
+  ['zh-cn', '/zh-cn'],
+  ['zh-tw', '/zh-tw'],
+  ['ja', '/ja'],
+  ['fr', '/fr'],
+  ['pt', '/pt'],
+  ['de', '/de'],
+]) {
+  for (const page of ['privacy', 'terms']) {
+    try {
+      const res = await fetch(`${BASE}${prefix}/${page}/`);
+      const html = await res.text();
+      const htmlLang = html.match(/<html lang="([^"]*)"/)?.[1] ?? '';
+      const bodyLen = (html.match(/<main[\s\S]*?<\/main>/)?.[0] ?? '').length;
+      legal.push({
+        label: `${lang}/${page}`,
+        ok: res.ok && bodyLen > 800 && !html.includes('[object Object]'),
+        detail: `${res.status} lang=${htmlLang} ${bodyLen}B`,
+      });
+    } catch (e) {
+      legal.push({ label: `${lang}/${page}`, ok: false, detail: String(e).slice(0, 80) });
+    }
+  }
+}
+
+const feeds = [];
+for (const [lang, prefix] of [
+  ['en', ''],
+  ['zh-cn', '/zh-cn'],
+  ['zh-tw', '/zh-tw'],
+  ['ja', '/ja'],
+]) {
+  try {
+    const res = await fetch(`${BASE}${prefix}/rss.xml`);
+    const xml = await res.text();
+    const items = (xml.match(/<item>/g) ?? []).length;
+    // XML 里只要有一个裸 & 整份 feed 就解不开，浏览器只会显示「解析失败」。
+    // 这里不引 XML 解析器，直接查未转义的 & —— 够用且零依赖。
+    const bareAmp = /&(?!amp;|lt;|gt;|quot;|apos;|#)/.test(xml);
+    const wellFormed = xml.startsWith('<?xml') && xml.trimEnd().endsWith('</rss>') && !bareAmp;
+    feeds.push({
+      label: `${lang} rss`,
+      ok: res.ok && items > 0 && wellFormed,
+      detail: `${items} 条${bareAmp ? ' 有未转义 &' : ''}`,
+    });
+  } catch (e) {
+    feeds.push({ label: `${lang} rss`, ok: false, detail: String(e).slice(0, 80) });
+  }
+}
+// 0 篇文章的语言不该有 feed，有了就是空壳
+for (const lang of ['fr', 'pt', 'de']) {
+  const res = await fetch(`${BASE}/${lang}/rss.xml`);
+  feeds.push({ label: `${lang} rss`, ok: res.status === 404, detail: `status=${res.status}` });
+}
+
+const ogs = [];
+for (const slug of ['home', 'markdown-to-word', 'markdown-to-pdf', 'word-to-markdown']) {
+  const url = `${BASE}/og/${slug}.png`;
+  try {
+    const res = await fetch(url);
+    const buf = Buffer.from(await res.arrayBuffer());
+    const isPng = buf.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+    const w = buf.readUInt32BE(16);
+    const h = buf.readUInt32BE(20);
+    ogs.push({
+      label: `og/${slug}.png`,
+      ok: res.ok && isPng && w === 1200 && h === 630,
+      detail: `${res.status} ${w}x${h} ${(buf.length / 1024).toFixed(0)}KB`,
+    });
+  } catch (e) {
+    ogs.push({ label: `og/${slug}.png`, ok: false, detail: String(e).slice(0, 80) });
+  }
+}
+
 // ---- 输出 ----
 let fail = 0;
 console.log('\n================ 18 个工具链路 ================');
@@ -178,6 +257,21 @@ for (const b of blogs) {
   console.log(
     `${b.ok ? 'PASS' : 'FAIL'}  ${b.label.padEnd(26)} 文章=${b.posts ?? 0} 正文=${b.bodyLen ?? 0} 字符 hreflang=${b.alts ?? 0} ${b.err ?? ''}`,
   );
+}
+console.log('\n================ 法务页（7 语言） ================');
+for (const l of legal) {
+  if (!l.ok) fail++;
+  console.log(`${l.ok ? 'PASS' : 'FAIL'}  ${l.label.padEnd(26)} ${l.detail}`);
+}
+console.log('\n================ RSS feed ================');
+for (const f of feeds) {
+  if (!f.ok) fail++;
+  console.log(`${f.ok ? 'PASS' : 'FAIL'}  ${f.label.padEnd(26)} ${f.detail}`);
+}
+console.log('\n================ OG 图 ================');
+for (const o of ogs) {
+  if (!o.ok) fail++;
+  console.log(`${o.ok ? 'PASS' : 'FAIL'}  ${o.label.padEnd(26)} ${o.detail}`);
 }
 console.log(`\n控制台错误 ${errors.length} 条`);
 errors.slice(0, 6).forEach((e) => console.log('  ! ' + e));

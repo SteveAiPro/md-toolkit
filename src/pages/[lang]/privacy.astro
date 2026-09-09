@@ -1,0 +1,13 @@
+---
+import LegalPage from '../../components/LegalPage.astro';
+import { PRIVACY } from '../../lib/legal.ts';
+import { langPaths, type Lang } from '../../i18n/index.ts';
+
+export function getStaticPaths() {
+  return langPaths().filter((p) => p.params.lang !== 'en');
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<LegalPage lang={lang} slug="privacy" content={PRIVACY[lang]} />

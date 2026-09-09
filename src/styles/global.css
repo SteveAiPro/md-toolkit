@@ -279,6 +279,14 @@ a:hover { color: var(--brand); }
 .blog__head { margin-bottom: 28px; }
 .blog__head h1 { font-size: 30px; margin: 0 0 8px; letter-spacing: -0.02em; }
 .blog__sub { margin: 0; color: var(--text-soft); font-size: 15px; max-width: 62ch; }
+.blog__rss {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px; padding: 6px 12px;
+  border: 1px solid var(--border); border-radius: 999px;
+  color: var(--text-soft); font-size: 13px; text-decoration: none;
+  transition: color .15s, border-color .15s;
+}
+.blog__rss:hover { color: var(--brand); border-color: var(--brand); }
 .blog__empty { color: var(--text-faint); padding: 32px 0; }
 
 .blog__tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }

@@ -27,6 +27,10 @@ function discoverTools() {
   return readdirSync(root, { withFileTypes: true })
     .filter((entry) => entry.isDirectory() && !SKIP.has(entry.name) && !LANGS.includes(entry.name))
     .map((entry) => entry.name)
+    // public/ 里的资源目录（og/ 等）会被原样拷进 dist，但它们不是页面。
+    // 用「有没有 index.html」判定，比往 SKIP 里加黑名单更耐久 ——
+    // 下次再新增资源目录也不会把脚本搞挂。
+    .filter((name) => existsSync(new URL(`./${name}/index.html`, DIST)))
     .sort();
 }
 

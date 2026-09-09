@@ -19,6 +19,7 @@ const en: Dict = {
   'blog.minRead': 'min read',
   'blog.empty': 'No posts in this language yet.',
   'blog.postsCount': 'articles',
+  'blog.rss': 'Subscribe by RSS',
 
   'home.title': 'Convert Markdown to Word, PDF, HTML & More',
   'home.subtitle':
@@ -92,6 +93,7 @@ const zhCn: Dict = {
   'blog.minRead': '分钟阅读',
   'blog.empty': '该语言下暂无文章。',
   'blog.postsCount': '篇文章',
+  'blog.rss': 'RSS 订阅',
 
   'home.title': '把 Markdown 转成 Word、PDF、HTML 等格式',
   'home.subtitle': '免费在线 Markdown 转换工具，实时预览。全部在浏览器本地完成，不会上传任何内容到服务器。',
@@ -162,6 +164,7 @@ const zhTw: Dict = {
   'blog.minRead': '分鐘閱讀',
   'blog.empty': '該語言下暫無文章。',
   'blog.postsCount': '篇文章',
+  'blog.rss': 'RSS 訂閱',
 
   'home.title': '把 Markdown 轉成 Word、PDF、HTML 等格式',
   'home.subtitle': '免費線上 Markdown 轉換工具，即時預覽。全部在瀏覽器本機完成，不會上傳任何內容到伺服器。',
@@ -232,6 +235,7 @@ const ja: Dict = {
   'blog.minRead': '分で読めます',
   'blog.empty': 'この言語の記事はまだありません。',
   'blog.postsCount': '件の記事',
+  'blog.rss': 'RSS で購読',
 
   'home.title': 'Markdown を Word・PDF・HTML などに変換',
   'home.subtitle':
@@ -305,6 +309,7 @@ const fr: Dict = {
   'blog.minRead': 'min de lecture',
   'blog.empty': 'Aucun article dans cette langue pour le moment.',
   'blog.postsCount': 'articles',
+  'blog.rss': 'Suivre par RSS',
 
   'home.title': 'Convertir Markdown en Word, PDF, HTML et plus',
   'home.subtitle':
@@ -379,6 +384,7 @@ const pt: Dict = {
   'blog.minRead': 'min de leitura',
   'blog.empty': 'Ainda não há posts neste idioma.',
   'blog.postsCount': 'artigos',
+  'blog.rss': 'Assinar por RSS',
 
   'home.title': 'Converta Markdown para Word, PDF, HTML e mais',
   'home.subtitle':
@@ -452,6 +458,7 @@ const de: Dict = {
   'blog.minRead': 'Min. Lesezeit',
   'blog.empty': 'In dieser Sprache gibt es noch keine Beiträge.',
   'blog.postsCount': 'Artikel',
+  'blog.rss': 'Per RSS abonnieren',
 
   'home.title': 'Markdown in Word, PDF, HTML und mehr umwandeln',
   'home.subtitle':

@@ -3,7 +3,7 @@
 对标 [md-to.com](https://md-to.com/) 的 Markdown 转换工具站骨架。**Astro 静态站 + 纯前端转换**，零服务器成本。
 
 **18 个转换方向全部实现**（与 md-to.com 一一对应），7 语言 i18n，带 blog / tag 内容层，
-**241 个页面构建 2.6s**。
+**253 个页面构建 5s**。
 全部 18 条工具链路 + 3 条下载链路 + blog 链路（4 语言）经浏览器实测通过，0 控制台错误。
 
 ---
@@ -43,6 +43,14 @@ SITE_URL=https://你的域名.com
 # 方式二：直接改 astro.config.mjs 的 site 字段
 ```
 
+**OG 分享图也烧了域名**（每张卡左下角印着站点 URL）。换真域名后要重生成一次：
+
+```bash
+SITE_URL=https://你的域名.com node make-og.mjs   # 19 张，~880KB
+```
+
+忘了跑的后果：分享卡片图正常显示，但图里的网址是 example.com —— 不报错，就是难看。
+
 部署本身不需要额外配置，Astro 是纯静态输出：
 
 - **Vercel**：导入仓库，Framework 选 Astro，Build Command 默认即可，Output `dist`
@@ -56,6 +64,9 @@ SITE_URL=https://你的域名.com
 1. 遍历 18 个工具页 → 加载示例（二进制工具上传 fixture）→ 断言输出非空
 2. 触发 docx / PNG 下载，落盘
 3. 统计控制台错误
+4. 法务页 7 语言逐一查 `<html lang>` 与正文长度（防「只有英文版」回归）
+5. RSS feed 真·校验：条目数 + 无未转义 `&`；fr/pt/de 必须 404（空语言不许有空壳 feed）
+6. OG 图逐张验 PNG 魔数 + 1200x630 尺寸（og:image 指向死链是肉眼看不出来的）
 
 `make-fixtures.mjs` 生成二进制测试文件（`.fixtures/word-sample.docx`、`.fixtures/pdf-sample.pdf`）。
 PDF 是手写的极简文本层 PDF，不依赖 `cupsfilter` 这类 macOS 专用命令。
@@ -78,7 +89,7 @@ PDF 是手写的极简文本层 PDF，不依赖 `cupsfilter` 这类 macOS 专用
 | word → md | mammoth | mammoth → HTML → turndown 两段式 | 见踩坑 6 |
 | pdf → md | pdfjs-dist | pdfjs 抽文本层 + 启发式还原标题 | 只认有文本层的 PDF |
 | 表格转换 | papaparse | papaparse | 一致 |
-| i18n | 7 语言 × 18 工具 + blog = 355 页 | **126 工具页 + 111 blog/tag 页 = 241 页** | blog 覆盖 4 语言，见下 |
+| i18n | 7 语言 × 18 工具 + blog = 355 页 | **126 工具页 + 123 blog/tag/法务页 = 253 页** | blog 覆盖 4 语言，见下 |
 | 托管 | 腾讯云 EdgeOne Pages | 任意静态托管 | — |
 | 变现 | AdSense + $19.99 买断 | 未接 | — |
 
