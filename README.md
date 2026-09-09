@@ -3,7 +3,7 @@
 对标 [md-to.com](https://md-to.com/) 的 Markdown 转换工具站骨架。**Astro 静态站 + 纯前端转换**，零服务器成本。
 
 **18 个转换方向全部实现**（与 md-to.com 一一对应），7 语言 i18n，带 blog / tag 内容层，
-**227 个页面构建 5.1s**。
+**241 个页面构建 2.6s**。
 全部 18 条工具链路 + 3 条下载链路 + blog 链路（4 语言）经浏览器实测通过，0 控制台错误。
 
 ---
@@ -78,7 +78,7 @@ PDF 是手写的极简文本层 PDF，不依赖 `cupsfilter` 这类 macOS 专用
 | word → md | mammoth | mammoth → HTML → turndown 两段式 | 见踩坑 6 |
 | pdf → md | pdfjs-dist | pdfjs 抽文本层 + 启发式还原标题 | 只认有文本层的 PDF |
 | 表格转换 | papaparse | papaparse | 一致 |
-| i18n | 7 语言 × 18 工具 + blog = 355 页 | **126 工具页 + 44 blog/tag 页 = 185 页** | blog 目前 en + zh-cn，见下 |
+| i18n | 7 语言 × 18 工具 + blog = 355 页 | **126 工具页 + 111 blog/tag 页 = 241 页** | blog 覆盖 4 语言，见下 |
 | 托管 | 腾讯云 EdgeOne Pages | 任意静态托管 | — |
 | 变现 | AdSense + $19.99 买断 | 未接 | — |
 
@@ -190,9 +190,29 @@ const availableLangs = LANGS.filter((code) => translations[code]);
 
 ### 当前覆盖
 
-- 6 篇文章 × **en / zh-cn / zh-tw / ja** = 24 篇（fr / pt / de 共 18 篇待补）
-- 15 个 tag 页 × 4 语言 = 60 页
-- blog 首页 7 个（其中 fr / pt / de 三个是空壳，见下）
+| 语言 | 篇数 | 覆盖的文章 |
+|---|---|---|
+| en | 10 | 全部 |
+| zh-cn | 10 | 全部 |
+| zh-tw | 6 | 前 6 篇 |
+| ja | 6 | 前 6 篇 |
+| fr / pt / de | 0 | — |
+
+- 文章页 32 个，tag 页 18 个 × 4 语言 = 72 页，blog 首页 7 个（fr / pt / de 是空壳，见下）
+
+### 后 4 篇为什么只写 en + zh-cn
+
+新增的 4 篇（markdown-to-html、html-to-markdown、GFM 扩展、怎么写 README）只铺了
+英文和简体中文，没有同步繁中和日文。理由：
+
+- 这 4 篇的关键词（"markdown to html"、"html to markdown"）搜索量集中在英语市场，
+  中文次之；繁中 / 日文的对应词搜索量很小。
+- 与其把 4 篇 × 4 语言铺满，不如先把**选题覆盖面**做宽 —— 长尾吃的是"有没有这一篇"，
+  不是"这一篇有几个语言版本"。
+
+hreflang 只输出真实存在的译本，所以 en / zh-cn 的新文章 hreflang=3（en + zh-Hans +
+x-default），不会指向不存在的繁中 / 日文页。想补的时候照 `group` 字段加文件即可，
+不用改任何代码。
 
 ### 没有文章的语言：空壳页要挡住
 
