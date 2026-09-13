@@ -27,7 +27,7 @@ const emptyBlogLangs = Object.keys(LOCALES).filter((l) => !langsWithPosts.has(l)
 export default defineConfig({
   // 上线前必须设成真域名：canonical / hreflang / sitemap 全部从这里推导。
   // 不想改代码就在部署环境里设 SITE_URL 环境变量。
-  site: process.env.SITE_URL ?? 'https://md-toolkit.example.com',
+  site: process.env.SITE_URL ?? 'https://mdtoolkit.dev',
   output: 'static',
   integrations: [
     // 多语言站点必须带 hreflang，否则 7 套页面会被判成重复内容

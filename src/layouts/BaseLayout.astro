@@ -6,6 +6,8 @@ import '../styles/preview.css';
 
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import Ads from '../components/Ads.astro';
 import { HREFLANG, LANGS, type Lang } from '../i18n/index.ts';
 import { homeUrl, localePath, toolUrl } from '../lib/url.ts';
 
@@ -76,6 +78,8 @@ const ogImage = new URL(slug ? `/og/${slug}.png` : '/og/home.png', Astro.site).h
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
+    <Analytics />
+
     <script is:inline>
       const stored = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -92,5 +96,6 @@ const ogImage = new URL(slug ? `/og/${slug}.png` : '/og/home.png', Astro.site).h
       <slot />
     </main>
     <Footer lang={lang} />
+    <Ads />
   </body>
 </html>

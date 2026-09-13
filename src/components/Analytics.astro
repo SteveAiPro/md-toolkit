@@ -1,0 +1,15 @@
+---
+// GA4 网站分析。未配置 PUBLIC_GA4_ID 时整段不渲染，不会向 Google 发任何请求。
+// 上线后在部署平台（Vercel）环境变量里填 PUBLIC_GA4_ID=G-XXXXXXXXXX 即生效。
+const id = import.meta.env.PUBLIC_GA4_ID;
+if (!id) return null;
+---
+<script async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() {
+    dataLayer.push(arguments);
+  }
+  gtag('js', new Date());
+  gtag('config', import.meta.env.PUBLIC_GA4_ID);
+</script>

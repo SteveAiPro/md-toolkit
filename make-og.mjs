@@ -18,7 +18,7 @@ const EXEC = join(
 );
 
 const OUT = new URL('./public/og/', import.meta.url);
-const SITE_LABEL = (process.env.SITE_URL ?? 'https://md-toolkit.example.com').replace(/^https?:\/\//, '');
+const SITE_LABEL = (process.env.SITE_URL ?? 'https://mdtoolkit.dev').replace(/^https?:\/\//, '');
 const TAGLINE = 'Free · No upload · Runs in your browser';
 
 /** 从 tools.ts 里把 slug 和英文 name 抓出来，避免在这里再维护一份清单 */

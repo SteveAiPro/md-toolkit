@@ -1,0 +1,20 @@
+---
+// Google AdSense 广告位。需先通过 AdSense 审核，并在部署平台同时配置
+// PUBLIC_ADSENSE_ID（ca-pub-...）与 PUBLIC_ADSENSE_SLOT（广告单元 ID）。
+// 两者缺一即整段不渲染，默认完全不影响页面。
+const client = import.meta.env.PUBLIC_ADSENSE_ID;
+const slot = import.meta.env.PUBLIC_ADSENSE_SLOT;
+if (!client || !slot) return null;
+---
+<ins
+  class="adsbygoogle"
+  style="display:block"
+  data-ad-client={client}
+  data-ad-slot={slot}
+  data-ad-format="auto"
+  data-full-width-responsive="true"
+></ins>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+  (window.adsbygoogle = window.adsbygoogle || []).push({});
+</script>
