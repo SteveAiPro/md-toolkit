@@ -35,6 +35,8 @@ export default defineConfig({
       i18n: { defaultLocale: 'en', locales: LOCALES },
       filter: (page) => {
         const path = new URL(page).pathname;
+        // 404 是错误页，绝不进 sitemap（路径含 /404）
+        if (path.includes('/404')) return false;
         // tag 归档页是导航页不是着陆页，且文章少时很薄 —— 一律不进 sitemap
         if (path.includes('/blog/tag/')) return false;
         // 空博客首页（该语言还没文章）不进 sitemap

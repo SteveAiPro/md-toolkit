@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t, pick } from '../i18n/ui.ts';
+import { TOOLS } from '../tools.ts';
+import { homeUrl, localePath, toolUrl } from '../lib/url.ts';
+import { LANGS, type Lang } from '../i18n/index.ts';
+
+interface Props {
+  lang: Lang;
+  /**
+   * 只有根 404 页（en）需要。
+   * 有些静态托管（Vercel / GitHub Pages）对任意错误路径都只用根 /404.html，
+   * 不会就近返回 /zh-cn/404/。这段脚本在根 404 页里把带语言前缀的错误路径
+   * 重定向到对应语言的 404 页，保证全平台都拿到本地化版本。
+   * 子路径 404（Netlify / Cloudflare 就近返回）本身就已是本地化的，无需重定向。
+   */
+  redirectToLang404?: boolean;
+}
+const { lang, redirectToLang404 = false } = Astro.props;
+
+// 挑几个高频工具，帮从错误页离开的用户快速找到目的地（也是内部链接）
+const POPULAR = [
+  'markdown-to-word',
+  'markdown-to-pdf',
+  'markdown-to-html',
+  'html-to-markdown',
+  'markdown-to-image',
+];
+const popular = POPULAR.map((slug) => TOOLS.find((tool) => tool.slug === slug)).filter(
+  (tool): tool is NonNullable<typeof tool> => Boolean(tool)
+);
+---
+
+<BaseLayout
+  lang={lang}
+  title={t(lang, 'notfound.title')}
+  description={t(lang, 'notfound.text')}
+  path="/404/"
+  noindex={true}
+>
+  <div class="container nf">
+    <p class="nf__code" aria-hidden="true">404</p>
+    <h1 class="nf__heading">{t(lang, 'notfound.heading')}</h1>
+    <p class="nf__text">{t(lang, 'notfound.text')}</p>
+    <p class="nf__actions">
+      <a class="btn btn--primary" href={homeUrl(lang)}>{t(lang, 'notfound.home')}</a>
+    </p>
+
+    <section class="nf__popular">
+      <h2 class="nf__popular-title">{t(lang, 'notfound.popular')}</h2>
+      <ul class="nf__tools">
+        {
+          popular.map((tool) => (
+            <li>
+              <a href={toolUrl(tool.slug, lang)}>{pick(lang, tool.name)}</a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="nf__blog">
+        <a href={localePath('/blog/', lang)}>{t(lang, 'notfound.blog')} →</a>
+      </p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .nf {
+    padding: 64px 0 88px;
+    text-align: center;
+  }
+  .nf__code {
+    font-size: clamp(72px, 18vw, 140px);
+    line-height: 1;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.04em;
+    color: var(--brand);
+  }
+  .nf__heading {
+    font-size: 26px;
+    margin: 8px 0 6px;
+  }
+  .nf__text {
+    color: var(--text-soft);
+    max-width: 46ch;
+    margin: 0 auto 24px;
+  }
+  .nf__actions {
+    margin: 0 0 48px;
+  }
+  .nf__popular {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .nf__popular-title {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin: 0 0 14px;
+    font-weight: 600;
+  }
+  .nf__tools {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+  .nf__tools a {
+    display: block;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+    background: var(--bg-soft);
+    font-size: 14px;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+  .nf__tools a:hover {
+    border-color: var(--brand);
+    color: var(--brand);
+  }
+  .nf__blog {
+    margin: 0;
+    font-size: 14px;
+  }
+  .nf__blog a {
+    color: var(--brand);
+    text-decoration: none;
+  }
+  .nf__blog a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+{
+  redirectToLang404 && (
+    <script
+      is:inline
+      define:vars={{ langs: LANGS.filter((l) => l !== 'en').join('|') }}
+    >
+      const m = location.pathname.match(new RegExp('^/(' + langs + ')/'));
+      if (m) location.replace('/' + m[1] + '/404/');
+    </script>
+  )
+}

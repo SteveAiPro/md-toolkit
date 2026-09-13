@@ -155,6 +155,50 @@ for (const [label, listPath] of [
   blogs.push(item);
 }
 
+// ---- 404 页：本地化 + 重定向 ----
+// astro preview 对任意错误路径都回落到根 /404.html（英文），所以这里用浏览器
+// 实测根 404 里的重定向脚本：/zh-cn/xxx 应跳到 /zh-cn/404/（本地化版）。
+// 再单独验证子路径 404（Netlify/Cloudflare 就近返回）本身已是本地化页。
+const notFound = [];
+const LANG_HREFLANG = { 'zh-cn': 'zh-Hans', ja: 'ja', fr: 'fr', 'zh-tw': 'zh-Hant', pt: 'pt', de: 'de' };
+for (const [lang, prefix] of [['zh-cn', '/zh-cn'], ['ja', '/ja'], ['fr', '/fr']]) {
+  try {
+    await page.goto(`${BASE}${prefix}/this-page-does-not-exist/`, {
+      waitUntil: 'domcontentloaded',
+      timeout: 20000,
+    });
+    // 等客户端重定向（location.replace）
+    await page.waitForTimeout(1200);
+    const info = await page.evaluate(() => ({
+      url: location.pathname,
+      lang: document.documentElement.lang,
+      code: document.querySelector('.nf__code')?.textContent?.trim() ?? '',
+      heading: document.querySelector('.nf__heading')?.textContent?.trim() ?? '',
+    }));
+    notFound.push({
+      label: `${lang} 404 重定向`,
+      ok: info.code === '404' && info.lang === LANG_HREFLANG[lang] && info.url.includes(`${prefix}/404`),
+      detail: `${info.url} lang=${info.lang} "${info.heading}"`,
+    });
+  } catch (e) {
+    notFound.push({ label: `${lang} 404 重定向`, ok: false, detail: String(e).slice(0, 80) });
+  }
+}
+for (const [lang, prefix] of [['zh-tw', '/zh-tw'], ['pt', '/pt'], ['de', '/de']]) {
+  try {
+    const res = await fetch(`${BASE}${prefix}/404/`);
+    const html = await res.text();
+    const langAttr = html.match(/<html lang="([^"]*)"/)?.[1] ?? '';
+    notFound.push({
+      label: `${lang} 404 就近`,
+      ok: res.ok && langAttr === LANG_HREFLANG[lang] && html.includes('nf__heading'),
+      detail: `${res.status} lang=${langAttr}`,
+    });
+  } catch (e) {
+    notFound.push({ label: `${lang} 404 就近`, ok: false, detail: String(e).slice(0, 80) });
+  }
+}
+
 await browser.close();
 
 // ---- 收尾项：法务页 / RSS / OG 图 ----
@@ -273,7 +317,16 @@ for (const o of ogs) {
   if (!o.ok) fail++;
   console.log(`${o.ok ? 'PASS' : 'FAIL'}  ${o.label.padEnd(26)} ${o.detail}`);
 }
+console.log('\n================ 404 页 ================');
+for (const n of notFound) {
+  if (!n.ok) fail++;
+  console.log(`${n.ok ? 'PASS' : 'FAIL'}  ${n.label.padEnd(26)} ${n.detail}`);
+}
 console.log(`\n控制台错误 ${errors.length} 条`);
-errors.slice(0, 6).forEach((e) => console.log('  ! ' + e));
+const appErrors = errors.filter((e) => !/Failed to load resource/.test(e));
+if (errors.length > appErrors.length) {
+  console.log(`  （其中 ${errors.length - appErrors.length} 条为「故意访问错误 URL」产生的资源 404，非应用错误）`);
+}
+appErrors.slice(0, 6).forEach((e) => console.log('  ! ' + e));
 console.log(`\n失败 ${fail} 项`);
 process.exit(fail > 0 ? 1 : 0);

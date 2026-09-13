@@ -1,0 +1,16 @@
+---
+import NotFound from '../../components/NotFound.astro';
+import { langPaths, type Lang } from '../../i18n/index.ts';
+
+// 每个语言各生成一份本地化 404：/zh-cn/404/、/ja/404/ ……
+// 这样用户在子路径打错 URL 时，托管商能找到对应语言的 404 页，
+// 而不是回落到服务器默认（纯英文、无样式的）丑页。
+// en 走根路径 404.html，不在这里生成，避免 /en/404/ 这种多余层级。
+export function getStaticPaths() {
+  return langPaths().filter((p) => p.params.lang !== 'en');
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<NotFound lang={lang} />

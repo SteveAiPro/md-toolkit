@@ -74,6 +74,12 @@ const en: Dict = {
   'footer.rights': 'All rights reserved.',
   'footer.privacy': 'Privacy',
   'footer.terms': 'Terms',
+  'notfound.title': '404 — Page not found',
+  'notfound.heading': 'Page not found',
+  'notfound.text': 'The page you\'re looking for doesn\'t exist, or may have moved.',
+  'notfound.home': 'Back to home',
+  'notfound.popular': 'Popular tools',
+  'notfound.blog': 'Read the blog',
 };
 
 const zhCn: Dict = {
@@ -145,6 +151,12 @@ const zhCn: Dict = {
   'footer.rights': '保留所有权利。',
   'footer.privacy': '隐私政策',
   'footer.terms': '服务条款',
+  'notfound.title': '404 — 页面未找到',
+  'notfound.heading': '页面未找到',
+  'notfound.text': '你访问的页面不存在，或已被移动。',
+  'notfound.home': '返回首页',
+  'notfound.popular': '热门工具',
+  'notfound.blog': '浏览博客',
 };
 
 const zhTw: Dict = {
@@ -216,6 +228,12 @@ const zhTw: Dict = {
   'footer.rights': '保留所有權利。',
   'footer.privacy': '隱私政策',
   'footer.terms': '服務條款',
+  'notfound.title': '404 — 頁面未找到',
+  'notfound.heading': '頁面未找到',
+  'notfound.text': '你造訪的頁面不存在，或已被移動。',
+  'notfound.home': '返回首頁',
+  'notfound.popular': '熱門工具',
+  'notfound.blog': '瀏覽部落格',
 };
 
 const ja: Dict = {
@@ -290,6 +308,12 @@ const ja: Dict = {
   'footer.rights': 'All rights reserved.',
   'footer.privacy': 'プライバシーポリシー',
   'footer.terms': '利用規約',
+  'notfound.title': '404 — ページが見つかりません',
+  'notfound.heading': 'ページが見つかりません',
+  'notfound.text': 'お探しのページは存在しないか、移動した可能性があります。',
+  'notfound.home': 'ホームに戻る',
+  'notfound.popular': 'よく使われるツール',
+  'notfound.blog': 'ブログを読む',
 };
 
 const fr: Dict = {
@@ -365,6 +389,12 @@ const fr: Dict = {
   'footer.rights': 'Tous droits réservés.',
   'footer.privacy': 'Confidentialité',
   'footer.terms': 'Conditions',
+  'notfound.title': '404 — Page introuvable',
+  'notfound.heading': 'Page introuvable',
+  'notfound.text': 'La page que vous cherchez n\'existe pas ou a été déplacée.',
+  'notfound.home': 'Retour à l\'accueil',
+  'notfound.popular': 'Outils populaires',
+  'notfound.blog': 'Lire le blog',
 };
 
 const pt: Dict = {
@@ -439,6 +469,12 @@ const pt: Dict = {
   'footer.rights': 'Todos os direitos reservados.',
   'footer.privacy': 'Privacidade',
   'footer.terms': 'Termos',
+  'notfound.title': '404 — Página não encontrada',
+  'notfound.heading': 'Página não encontrada',
+  'notfound.text': 'A página que você procura não existe ou foi movida.',
+  'notfound.home': 'Voltar ao início',
+  'notfound.popular': 'Ferramentas populares',
+  'notfound.blog': 'Ler o blog',
 };
 
 const de: Dict = {
@@ -513,6 +549,12 @@ const de: Dict = {
   'footer.rights': 'Alle Rechte vorbehalten.',
   'footer.privacy': 'Datenschutz',
   'footer.terms': 'Nutzungsbedingungen',
+  'notfound.title': '404 — Seite nicht gefunden',
+  'notfound.heading': 'Seite nicht gefunden',
+  'notfound.text': 'Die gesuchte Seite existiert nicht oder wurde verschoben.',
+  'notfound.home': 'Zurück zur Startseite',
+  'notfound.popular': 'Beliebte Tools',
+  'notfound.blog': 'Blog lesen',
 };
 
 /**
