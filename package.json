@@ -10,7 +10,9 @@
     "astro": "astro",
     "fixtures": "node make-fixtures.mjs",
     "check:i18n": "node check-i18n.mjs",
-    "test:e2e": "node make-fixtures.mjs && node test-e2e.mjs"
+    "check:links": "node check-links.mjs",
+    "test:e2e": "node make-fixtures.mjs && node test-e2e.mjs",
+    "check": "npm run build && npm run check:i18n && npm run check:links"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
