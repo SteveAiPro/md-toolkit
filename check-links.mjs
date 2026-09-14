@@ -34,7 +34,10 @@ for (const f of htmls) {
   const html = readFileSync(f, 'utf8');
   for (const m of html.matchAll(/href="(\/[^"#?]*)"/g)) {
     let u = m[1];
-    if (/\.(png|jpg|svg|xml|txt|css|js|ico|woff2?)$/.test(u)) continue;
+    // 尾段带扩展名的一律当静态资源跳过（png/svg/xml/txt/ico/webmanifest…）。
+    // 与其不断往枚举里补扩展名，不如用「带点就是文件」这个规则：
+    // 本站点是 trailingSlash: always，站内页面永远是 /foo/ 目录形式，不可能带点。
+    if (/\.[a-z0-9]+$/i.test(u)) continue;
     if (!u.endsWith('/')) u += '/';
     u = u.replace(/\/+/g, '/');
     if (!pages.has(u)) {

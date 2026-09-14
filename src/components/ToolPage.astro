@@ -3,7 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SplitEditor from './SplitEditor.astro';
 import { t, pick } from '../i18n/ui.ts';
 import type { Lang } from '../i18n/index.ts';
-import { toolUrl } from '../lib/url.ts';
+import { localePath, toolUrl } from '../lib/url.ts';
+import { breadcrumbList } from '../lib/schema.ts';
 import type { ToolDef } from '../tools.ts';
 
 interface Props {
@@ -24,9 +25,15 @@ const faqs = [
   { q: t(lang, 'faq.pdf.q'), a: t(lang, 'faq.pdf.a') },
 ];
 
+const homeUrl = `${siteUrl}${localePath('/', lang)}`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
+    breadcrumbList([
+      { name: t(lang, 'nav.home'), url: homeUrl },
+      { name: pick(lang, tool.name), url: canonical },
+    ]),
     {
       '@type': 'WebApplication',
       name: pick(lang, tool.name),

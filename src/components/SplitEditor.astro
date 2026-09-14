@@ -33,9 +33,11 @@ const TITLES: Record<ToolDef['inputKind'], string> = {
   file: t(lang, 'tool.file'),
 };
 
+// md / html 的占位是「引导文案」，走 i18n；
+// csv / json / latex 的是示例数据（name,status,owner 之类），本来就该保持原样不翻译。
 const PLACEHOLDERS: Record<ToolDef['inputKind'], string> = {
-  md: '# Start typing Markdown…',
-  html: '<p>Or paste HTML here…</p>',
+  md: t(lang, 'ph.md'),
+  html: t(lang, 'ph.html'),
   csv: 'name,status,owner',
   json: '[{ "name": "Word export", "status": "Shipped" }]',
   latex: '\\section{Introduction}',
@@ -58,6 +60,7 @@ const config = {
     failed: t(lang, 'tool.failed'),
     dropHint: t(lang, 'tool.drop'),
     empty: t(lang, 'tool.empty'),
+    downloading: t(lang, 'tool.downloading'),
   },
 };
 ---

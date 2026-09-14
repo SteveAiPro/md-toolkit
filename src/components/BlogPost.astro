@@ -5,6 +5,7 @@ import { t, pick } from '../i18n/ui.ts';
 import { postSlug, translationsOf, readingMinutes, type Post } from '../lib/blog.ts';
 import { localePath, toolUrl } from '../lib/url.ts';
 import { getTool } from '../tools.ts';
+import { breadcrumbList } from '../lib/schema.ts';
 import { LANGS, type Lang } from '../i18n/index.ts';
 
 interface Props {
@@ -27,16 +28,27 @@ const related = post.data.tools
 
 const fmt = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' });
 
+const site = (Astro.site ?? new URL('https://mdtoolkit.dev')).href.replace(/\/$/, '');
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: post.data.title,
-  description: post.data.description,
-  datePublished: post.data.pubDate.toISOString(),
-  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
-  inLanguage: lang,
-  keywords: post.data.tags.join(', '),
-  publisher: { '@type': 'Organization', name: SITE },
+  '@graph': [
+    breadcrumbList([
+      { name: t(lang, 'nav.home'), url: `${site}${localePath('/', lang)}` },
+      { name: t(lang, 'blog.title'), url: `${site}${localePath('/blog/', lang)}` },
+      { name: post.data.title, url: `${site}${localePath(`/blog/${slug}/`, lang)}` },
+    ]),
+    {
+      '@type': 'Article',
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: post.data.pubDate.toISOString(),
+      dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+      inLanguage: lang,
+      keywords: post.data.tags.join(', '),
+      publisher: { '@type': 'Organization', name: SITE },
+    },
+  ],
 };
 ---
 

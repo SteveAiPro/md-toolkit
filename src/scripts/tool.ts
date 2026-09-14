@@ -18,6 +18,7 @@ interface ToolConfig {
     failed: string;
     dropHint: string;
     empty: string;
+    downloading: string;
   };
 }
 
@@ -141,6 +142,8 @@ export async function initTool(config: ToolConfig): Promise<void> {
     }
     const original = downloadBtn.textContent;
     downloadBtn.setAttribute('disabled', 'true');
+    // 生成 Word / PDF 要几十到几百毫秒，不给反馈用户会以为按钮点坏了
+    downloadBtn.textContent = config.labels.downloading;
     try {
       await converter.download?.(currentValue(), filenameBase(), target?.innerHTML ?? '');
     } catch (error) {
