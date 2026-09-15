@@ -237,6 +237,9 @@ for (const [lang, prefix] of [
   ['zh-cn', '/zh-cn'],
   ['zh-tw', '/zh-tw'],
   ['ja', '/ja'],
+  ['fr', '/fr'],
+  ['pt', '/pt'],
+  ['de', '/de'],
 ]) {
   try {
     const res = await fetch(`${BASE}${prefix}/rss.xml`);
@@ -255,11 +258,8 @@ for (const [lang, prefix] of [
     feeds.push({ label: `${lang} rss`, ok: false, detail: String(e).slice(0, 80) });
   }
 }
-// 0 篇文章的语言不该有 feed，有了就是空壳
-for (const lang of ['fr', 'pt', 'de']) {
-  const res = await fetch(`${BASE}/${lang}/rss.xml`);
-  feeds.push({ label: `${lang} rss`, ok: res.status === 404, detail: `status=${res.status}` });
-}
+// 每个语言现在都有文章，feed 应当存在且有内容。
+// 之前断言 fr/pt/de 返回 404，是因为那三语还没有文章 —— 断言随内容补齐而失效。
 
 const ogs = [];
 for (const slug of ['home', 'markdown-to-word', 'markdown-to-pdf', 'word-to-markdown']) {

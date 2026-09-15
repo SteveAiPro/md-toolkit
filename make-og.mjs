@@ -8,7 +8,7 @@
  * 用法：node make-og.mjs
  */
 import { chromium } from 'playwright-core';
-import { mkdirSync, readFileSync, existsSync } from 'node:fs';
+import { mkdirSync, readFileSync, existsSync, readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 
@@ -36,9 +36,50 @@ if (tools.length !== 18) {
   console.warn(`⚠️ 只解析到 ${tools.length} 个工具（预期 18），检查 src/tools.ts 字段顺序是否变了`);
 }
 
+/**
+ * 读博客文章的真实标题，OG 卡用各语言自己的标题。
+ * 只解析 frontmatter 的 title 行，不引入 yaml 依赖。
+ */
+function readPosts() {
+  const root = new URL('./src/content/blog/', import.meta.url);
+  const out = [];
+  for (const lang of readdirSync(root, { withFileTypes: true })) {
+    if (!lang.isDirectory()) continue;
+    const dir = new URL(`./${lang.name}/`, root);
+    for (const f of readdirSync(dir)) {
+      if (!f.endsWith('.md')) continue;
+      const src = readFileSync(new URL(f, dir), 'utf8');
+      const m = src.match(/^title:\s*(.+?)\s*$/m);
+      if (!m) continue;
+      out.push({
+        lang: lang.name,
+        slug: f.replace(/\.md$/, ''),
+        title: m[1].replace(/^["']|["']$/g, ''),
+      });
+    }
+  }
+  return out;
+}
+
+const posts = readPosts();
+
 /** 卡片：浅色底 + 左侧色条 + 巨大标题，和站点的浅色调一致 */
+/**
+ * 标题字号按长度分档：工具名很短（"Markdown to Word"）用 76px 才撑得住版面，
+ * 而文章标题动辄 60+ 字符，同样字号会撞到右下角水印并溢出卡片。
+ */
+function titleSize(title) {
+  const n = String(title).length;
+  if (n <= 22) return 76;
+  if (n <= 40) return 62;
+  if (n <= 60) return 50;
+  if (n <= 85) return 42;
+  return 36;
+}
+
 function card({ eyebrow, title, sub, watermark }) {
   const escaped = String(title).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const size = titleSize(title);
   return `<!doctype html>
 <html><head><meta charset="utf-8"><style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -62,7 +103,7 @@ function card({ eyebrow, title, sub, watermark }) {
   .brand-name { font-size: 26px; font-weight: 700; letter-spacing: -0.2px; }
   .eyebrow { font-size: 22px; font-weight: 600; color: #2563eb; letter-spacing: 3px;
              text-transform: uppercase; margin-bottom: 20px; }
-  h1 { font-size: 76px; line-height: 1.1; font-weight: 750; letter-spacing: -2px; }
+  h1 { font-size: ${size}px; line-height: 1.15; font-weight: 750; letter-spacing: -1.5px; }
   .tagline { margin-top: 38px; font-size: 25px; color: #64748b; letter-spacing: 0.4px; }
   .sub { margin-top: 12px; font-size: 21px; color: #94a3b8;
          font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
@@ -98,9 +139,20 @@ const targets = [
       watermark: 'MD',
     }),
   })),
+  // 博客文章：分享到社交平台时带真实标题，比所有文章共用 home.png 的点击率高
+  ...posts.map((p) => ({
+    file: `blog/${p.slug}.${p.lang}.png`,
+    html: card({
+      eyebrow: 'Guide',
+      title: p.title,
+      sub: `${SITE_LABEL}/blog/${p.slug}`,
+      watermark: 'MD',
+    }),
+  })),
 ];
 
 mkdirSync(OUT, { recursive: true });
+mkdirSync(new URL('./blog/', OUT), { recursive: true });
 
 if (!existsSync(EXEC)) {
   console.error(`✗ 找不到 chromium：${EXEC}`);

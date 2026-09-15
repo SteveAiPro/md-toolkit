@@ -30,9 +30,15 @@ interface Props {
   noindex?: boolean;
   /** 该页面所在语言有文章时贴 RSS 发现链接（0 篇的语言不生成 feed，贴了就是死链） */
   feed?: boolean;
+  /**
+   * 直接指定 OG 图文件名（相对 /og/，如 'blog/foo.en.png'）。
+   * 博客文章既没有工具 slug，也不该共用 home.png，靠它覆盖。
+   */
+  ogFile?: string;
 }
 
-const { lang, title, description, slug, path, availableLangs, jsonLd, noindex, feed } = Astro.props;
+const { lang, title, description, slug, path, availableLangs, jsonLd, noindex, feed, ogFile } =
+  Astro.props;
 
 // en 版路径统一先算出来，再按语言加前缀
 const basePath = path ?? (slug ? toolUrl(slug, 'en') : homeUrl('en'));
@@ -45,7 +51,7 @@ const alternates = (availableLangs ?? LANGS).map((code) => ({
 // 工具页用自己的 OG 卡（make-og.mjs 生成），其余页面回落到 home.png。
 // 顺序很重要：必须先确认 public/og/ 里有这个图，否则 og:image 会指向 404，
 // 分享出去就是空白卡片 —— 之前所有页面都写死指向一个不存在的文件。
-const ogImage = new URL(slug ? `/og/${slug}.png` : '/og/home.png', Astro.site).href;
+const ogImage = new URL(`/og/${ogFile ?? (slug ? `${slug}.png` : 'home.png')}`, Astro.site).href;
 ---
 
 <!doctype html>

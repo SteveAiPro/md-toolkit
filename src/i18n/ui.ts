@@ -39,6 +39,7 @@ const en: Dict = {
   'ph.md': '# Start typing Markdown…',
   'ph.html': '<p>Or paste HTML here…</p>',
   'tool.noFile': 'No file selected yet',
+  'tool.related': 'Related tools',
   'tool.empty': 'Choose a file first',
 
   'why.title': 'Why choose this toolkit',
@@ -116,6 +117,7 @@ const zhCn: Dict = {
   'ph.md': '# 开始输入 Markdown…',
   'ph.html': '<p>或在此粘贴 HTML…</p>',
   'tool.noFile': '还没有选择文件',
+  'tool.related': '相关工具',
   'tool.empty': '请先选择文件',
 
   'why.title': '为什么用它',
@@ -191,6 +193,7 @@ const zhTw: Dict = {
   'ph.md': '# 開始輸入 Markdown…',
   'ph.html': '<p>或在此貼上 HTML…</p>',
   'tool.noFile': '還沒有選擇檔案',
+  'tool.related': '相關工具',
   'tool.empty': '請先選擇檔案',
 
   'why.title': '為什麼用它',
@@ -267,6 +270,7 @@ const ja: Dict = {
   'ph.md': '# Markdown の入力を開始…',
   'ph.html': '<p>ここに HTML を貼り付け…</p>',
   'tool.noFile': 'ファイルが未選択です',
+  'tool.related': '関連ツール',
   'tool.empty': '先にファイルを選択してください',
 
   'why.title': '選ばれる理由',
@@ -345,6 +349,7 @@ const fr: Dict = {
   'ph.md': '# Commencez à saisir du Markdown…',
   'ph.html': '<p>Ou collez du HTML ici…</p>',
   'tool.noFile': 'Aucun fichier sélectionné',
+  'tool.related': 'Outils associés',
   'tool.empty': 'Choisissez d\'abord un fichier',
 
   'why.title': 'Pourquoi choisir cette boîte à outils',
@@ -424,6 +429,7 @@ const pt: Dict = {
   'ph.md': '# Comece a digitar Markdown…',
   'ph.html': '<p>Ou cole o HTML aqui…</p>',
   'tool.noFile': 'Nenhum arquivo selecionado',
+  'tool.related': 'Ferramentas relacionadas',
   'tool.empty': 'Escolha um arquivo primeiro',
 
   'why.title': 'Por que escolher este kit de ferramentas',
@@ -502,6 +508,7 @@ const de: Dict = {
   'ph.md': '# Beginnen Sie mit der Markdown-Eingabe…',
   'ph.html': '<p>Oder fügen Sie HTML hier ein…</p>',
   'tool.noFile': 'Noch keine Datei ausgewählt',
+  'tool.related': 'Ähnliche Tools',
   'tool.empty': 'Wählen Sie zuerst eine Datei aus',
 
   'why.title': 'Warum dieses Toolkit',
