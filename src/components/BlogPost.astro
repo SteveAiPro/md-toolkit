@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { t, pick } from '../i18n/ui.ts';
-import { postSlug, translationsOf, readingMinutes, type Post } from '../lib/blog.ts';
+import { postSlug, translationsOf, readingMinutes, postsByLang, type Post } from '../lib/blog.ts';
 import { localePath, toolUrl } from '../lib/url.ts';
 import { getTool } from '../tools.ts';
 import { breadcrumbList } from '../lib/schema.ts';
@@ -25,6 +25,20 @@ const SITE = 'Markdown Toolkit';
 const related = post.data.tools
   .map((toolSlug) => getTool(toolSlug))
   .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
+
+// 相关文章内链：文章 -> 文章，补全 SEO 内链闭环（原站点只有 文章 -> 工具）
+const postTags = new Set(post.data.tags);
+const relatedPosts = (await postsByLang(lang))
+  .filter((p) => p.id !== post.id)
+  .map((p) => {
+    const overlap = p.data.tags.filter((t) => postTags.has(t)).length;
+    const sameGroup = p.data.group === post.data.group ? 1 : 0;
+    return { p, score: overlap * 10 + sameGroup };
+  })
+  .filter((x) => x.score > 0)
+  .sort((a, b) => b.score - a.score || b.p.data.pubDate.valueOf() - a.p.data.pubDate.valueOf())
+  .slice(0, 3)
+  .map((x) => x.p);
 
 const fmt = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -106,6 +120,22 @@ const jsonLd = {
               <li>
                 <a href={toolUrl(tool.slug, lang)}>{pick(lang, tool.name)}</a>
                 <span>{pick(lang, tool.seoDesc)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      relatedPosts.length > 0 && (
+        <section class="post__related">
+          <h2>{t(lang, 'blog.relatedPosts')}</h2>
+          <ul class="post__relatedList">
+            {relatedPosts.map((p) => (
+              <li>
+                <a href={localePath(`/blog/${postSlug(p)}/`, lang)}>{p.data.title}</a>
+                <span>{p.data.description}</span>
               </li>
             ))}
           </ul>

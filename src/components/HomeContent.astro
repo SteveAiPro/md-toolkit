@@ -5,6 +5,7 @@ import { HREFLANG, type Lang } from '../i18n/index.ts';
 import { getFaq } from '../i18n/faq.ts';
 import { TOOLS } from '../tools.ts';
 import { localePath, toolUrl } from '../lib/url.ts';
+import { postsByLang, readingMinutes, postSlug } from '../lib/blog.ts';
 
 interface Props {
   lang: Lang;
@@ -20,6 +21,10 @@ const description = t(lang, 'home.subtitle');
 const site = (Astro.site ?? new URL('https://mdtoolkit.dev')).href.replace(/\/$/, '');
 const homeUrl = `${site}${localePath('/', lang)}`;
 const faq = getFaq(lang);
+
+// 首页博客精选：给 blog 引流。当前首页原本 0 处指向 blog 的内部链接。
+const latestPosts = (await postsByLang(lang)).slice(0, 3);
+const fmtPost = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' });
 
 // 首页结构化数据：站点身份 + 工具清单 + FAQ。
 // ItemList 让搜索引擎把 18 个工具当成一组来理解；FAQPage 用来抢 People Also Ask 的位置。
@@ -119,6 +124,31 @@ const jsonLd = {
         </div>
       </div>
     </section>
+
+    {
+      latestPosts.length > 0 && (
+        <section class="section">
+          <div class="blog-head">
+            <h2>{t(lang, 'home.blogTitle')}</h2>
+            <a class="blog-all" href={localePath('/blog/', lang)}>{t(lang, 'blog.back')} →</a>
+          </div>
+          <div class="blog-grid">
+            {
+              latestPosts.map((post) => (
+                <a class="blog-card" href={localePath(`/blog/${postSlug(post)}/`, lang)}>
+                  <h3>{post.data.title}</h3>
+                  <p>{post.data.description}</p>
+                  <div class="blog-card__meta">
+                    <time datetime={post.data.pubDate.toISOString()}>{fmtPost.format(post.data.pubDate)}</time>
+                    <span>· {readingMinutes(post.body, lang)} min</span>
+                  </div>
+                </a>
+              ))
+            }
+          </div>
+        </section>
+      )
+    }
 
     <section class="section">
       <h2>{faq.title}</h2>

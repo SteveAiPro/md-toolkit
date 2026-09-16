@@ -79,6 +79,8 @@ const en: Dict = {
   'notfound.home': 'Back to home',
   'notfound.popular': 'Popular tools',
   'notfound.blog': 'Read the blog',
+  'home.blogTitle': "From the blog",
+  'blog.relatedPosts': "Related posts",
 };
 
 const zhCn: Dict = {
@@ -155,6 +157,8 @@ const zhCn: Dict = {
   'notfound.home': '返回首页',
   'notfound.popular': '热门工具',
   'notfound.blog': '浏览博客',
+  'home.blogTitle': "博客精选",
+  'blog.relatedPosts': "相关文章",
 };
 
 const zhTw: Dict = {
@@ -231,6 +235,8 @@ const zhTw: Dict = {
   'notfound.home': '返回首頁',
   'notfound.popular': '熱門工具',
   'notfound.blog': '瀏覽部落格',
+  'home.blogTitle': "部落格精選",
+  'blog.relatedPosts': "相關文章",
 };
 
 const ja: Dict = {
@@ -310,6 +316,8 @@ const ja: Dict = {
   'notfound.home': 'ホームに戻る',
   'notfound.popular': 'よく使われるツール',
   'notfound.blog': 'ブログを読む',
+  'home.blogTitle': "ブログ",
+  'blog.relatedPosts': "関連記事",
 };
 
 const fr: Dict = {
@@ -390,6 +398,8 @@ const fr: Dict = {
   'notfound.home': 'Retour à l\'accueil',
   'notfound.popular': 'Outils populaires',
   'notfound.blog': 'Lire le blog',
+  'home.blogTitle': "Sur le blog",
+  'blog.relatedPosts': "Articles similaires",
 };
 
 const pt: Dict = {
@@ -469,6 +479,8 @@ const pt: Dict = {
   'notfound.home': 'Voltar ao início',
   'notfound.popular': 'Ferramentas populares',
   'notfound.blog': 'Ler o blog',
+  'home.blogTitle': "No blog",
+  'blog.relatedPosts': "Artigos relacionados",
 };
 
 const de: Dict = {
@@ -548,6 +560,8 @@ const de: Dict = {
   'notfound.home': 'Zurück zur Startseite',
   'notfound.popular': 'Beliebte Tools',
   'notfound.blog': 'Blog lesen',
+  'home.blogTitle': "Aus dem Blog",
+  'blog.relatedPosts': "Ähnliche Beiträge",
 };
 
 /**

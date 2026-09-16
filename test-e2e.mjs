@@ -280,6 +280,20 @@ for (const slug of ['home', 'markdown-to-word', 'markdown-to-pdf', 'word-to-mark
   }
 }
 
+// ---- 图片 sitemap（新增端点）：68 张 OG 图应全部进 image:loc ----
+try {
+  const res = await fetch(`${BASE}/image-sitemap.xml`);
+  const xml = await res.text();
+  const imgCount = (xml.match(/<image:loc>/g) || []).length;
+  feeds.push({
+    label: 'image-sitemap.xml',
+    ok: res.ok && xml.includes('<urlset') && imgCount >= 60,
+    detail: `${res.status} ${imgCount} 张图`,
+  });
+} catch (e) {
+  feeds.push({ label: 'image-sitemap.xml', ok: false, detail: String(e).slice(0, 80) });
+}
+
 // ---- 输出 ----
 let fail = 0;
 console.log('\n================ 18 个工具链路 ================');
