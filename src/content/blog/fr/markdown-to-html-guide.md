@@ -2,7 +2,7 @@
 title: "Markdown vers HTML : ce qui se passe réellement entre les deux"
 description: "Le pipeline de l'analyseur, la faille XSS que personne ne corrige, et pourquoi votre HTML brut disparaît silencieusement."
 pubDate: 2026-08-17
-tags: ['markdown', 'html', 'convertisseur', 'tutoriel']
+tags: ['markdown', 'html', 'converter', 'tutorial']
 lang: fr
 group: markdown-to-html-guide
 tools: ['markdown-to-html', 'markdown-editor']

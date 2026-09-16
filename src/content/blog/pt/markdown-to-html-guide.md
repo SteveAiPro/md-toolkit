@@ -2,7 +2,7 @@
 title: "Markdown para HTML: o que realmente acontece no meio do caminho"
 description: "O pipeline do analisador, a falha de XSS que ninguém corrige e por que seu HTML bruto desaparece em silêncio."
 pubDate: 2026-08-17
-tags: ['markdown', 'html', 'conversor', 'tutorial']
+tags: ['markdown', 'html', 'converter', 'tutorial']
 lang: pt
 group: markdown-to-html-guide
 tools: ['markdown-to-html', 'markdown-editor']

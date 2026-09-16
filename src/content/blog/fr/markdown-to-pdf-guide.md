@@ -2,7 +2,7 @@
 title: "Markdown vers PDF : pourquoi l'impression du navigateur surpasse html2pdf.js"
 description: "L'approche standard transforme votre document en image matricielle. Il existe une meilleure méthode qui garde le texte sélectionnable et la pagination correcte."
 pubDate: 2026-01-25
-tags: ['markdown', 'pdf', 'impression-navigateur', 'frontend', 'technique']
+tags: ['markdown', 'pdf', 'browser-print', 'frontend', 'technical']
 lang: fr
 group: markdown-to-pdf-guide
 tools: ['markdown-to-pdf', 'markdown-table-to-pdf']

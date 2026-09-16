@@ -2,7 +2,7 @@
 title: "Começando com Markdown: um guia prático"
 description: "Aprenda Markdown em dez minutos — sintaxe, tabelas, blocos de código e as armadilhas que fazem iniciantes perderem uma hora."
 pubDate: 2026-01-12
-tags: ['markdown', 'iniciante', 'tutorial']
+tags: ['markdown', 'beginner', 'tutorial']
 lang: pt
 group: getting-started-with-markdown
 tools: ['markdown-editor', 'markdown-to-pdf', 'markdown-to-html']

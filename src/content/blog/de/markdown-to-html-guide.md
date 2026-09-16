@@ -2,7 +2,7 @@
 title: "Markdown zu HTML: Was dazwischen wirklich passiert"
 description: "Die Parser-Pipeline, die XSS-Lücke, die niemand schließt, und warum Ihr rohes HTML stillschweigend verschwindet."
 pubDate: 2026-08-17
-tags: ['markdown', 'html', 'konverter', 'tutorial']
+tags: ['markdown', 'html', 'converter', 'tutorial']
 lang: de
 group: markdown-to-html-guide
 tools: ['markdown-to-html', 'markdown-editor']

@@ -2,7 +2,7 @@
 title: "Markdown para PDF: por que a impressão do navegador vence o html2pdf.js"
 description: "A abordagem padrão transforma seu documento em bitmap. Existe um caminho melhor que mantém o texto selecionável e a paginação correta."
 pubDate: 2026-01-25
-tags: ['markdown', 'pdf', 'impressao-navegador', 'frontend', 'tecnico']
+tags: ['markdown', 'pdf', 'browser-print', 'frontend', 'technical']
 lang: pt
 group: markdown-to-pdf-guide
 tools: ['markdown-to-pdf', 'markdown-table-to-pdf']

@@ -2,7 +2,7 @@
 title: "実際に読まれる README の書き方"
 description: "機能する構成、多くの README を台無しにする 4 つの失敗、そしてスクリーンショットが段落に勝る理由。"
 pubDate: 2026-09-07
-tags: ['markdown', 'readme', '入門', 'チュートリアル']
+tags: ['markdown', 'readme', 'beginner', 'tutorial']
 lang: ja
 group: write-a-better-readme
 tools: ['markdown-editor', 'markdown-to-image', 'markdown-to-pdf']

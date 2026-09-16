@@ -2,7 +2,7 @@
 title: "Markdown zu PDF: Warum der Browserdruck besser ist als html2pdf.js"
 description: "Der Standardansatz macht aus Ihrem Dokument ein Rasterbild. Es gibt einen besseren Weg, der Text auswählbar und die Seitenaufteilung korrekt hält."
 pubDate: 2026-01-25
-tags: ['markdown', 'pdf', 'browserdruck', 'frontend', 'technisch']
+tags: ['markdown', 'pdf', 'browser-print', 'frontend', 'technical']
 lang: de
 group: markdown-to-pdf-guide
 tools: ['markdown-to-pdf', 'markdown-table-to-pdf']

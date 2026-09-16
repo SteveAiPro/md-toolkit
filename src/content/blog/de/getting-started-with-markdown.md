@@ -2,7 +2,7 @@
 title: "Markdown für Einsteiger: Ein praktischer Leitfaden"
 description: "Markdown in zehn Minuten lernen — Syntax, Tabellen, Codeblöcke und die Stolperfallen, die Anfänger eine Stunde kosten."
 pubDate: 2026-01-12
-tags: ['markdown', 'einsteiger', 'tutorial']
+tags: ['markdown', 'beginner', 'tutorial']
 lang: de
 group: getting-started-with-markdown
 tools: ['markdown-editor', 'markdown-to-pdf', 'markdown-to-html']
